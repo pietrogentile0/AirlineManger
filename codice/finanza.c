@@ -5,9 +5,9 @@ typedef struct{
 } Transazione;
 
 /*
+    Funzione che legge tutte le transazioni presenti su di un file e le visualizza a schermo
 
-    GESTIONE FILE
-
+    @param char* Nome del file da cui leggere le transazioni
 */
 void visualizzaTransazioni(char* fileName){
     Transazione temp;
@@ -18,6 +18,12 @@ void visualizzaTransazioni(char* fileName){
     fclose(fpin);
 }
 
+
+/*
+    Funzione che imposta una struttura Data alla data corrente
+
+    @param Data* Puntatore a struttura Data da impostare
+*/
 void setDataTransazione(Data* data){
     data->day = getDay();
     data->month = getMonth();
@@ -26,6 +32,13 @@ void setDataTransazione(Data* data){
     data->minute = getMinute();
 }
 
+/*
+    Funzione che aggiunge una transazione al registro delle transazioni
+
+    @param char* nome del tipo di transazione da mettere nel file
+    @param float Importo della transazione
+    @param char* Nome del file su cui scrivere la transazione
+*/
 void uploadTransazione(char* type, float importo, char* fileName){
     Transazione temp;
     strcpy(temp.type, type);
@@ -38,9 +51,10 @@ void uploadTransazione(char* type, float importo, char* fileName){
 }
 
 /*
+    Funzione che, dopo aver richiesto il metodo di pagamento e averlo effettuato, lo aggiunge al registro dei pagamenti
 
-    PAGAMENTO 
-
+    @param ListaViaggi* Testa della lista dei viaggi
+    @param char* Nome del file su cui scrivere le transazioni
 */
 void pagamento(ListaViaggi* viaggioDaPagare, char* fileName){
     int metodoPag;

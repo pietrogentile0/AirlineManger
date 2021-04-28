@@ -82,6 +82,15 @@ int isCurrentMinute(int year, int month, int day, int hour, int minute){
     return 0;
 }
 
+
+/*
+    Funzione che compara due date
+
+    @param Data Prima data
+    @param Data Seconda data
+
+    @return 0 se uguali, 1 se il primo è maggiore, -1 se il secondo è maggiore
+*/
 int datecmp(Data d1, Data d2){
     if(d1.year == d2.year && d1.month == d2.month && d1.day == d2.day && d1.hour == d2.hour && d1.minute == d2.minute)
         return 0;

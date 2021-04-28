@@ -17,6 +17,15 @@ typedef struct listaViaggi{
     RICERCA
 
 */
+
+/*
+    Funzione che, se presente un viaggio con l'ID corrispondente, ne comunica l'indirizzo.
+
+    @param ListaViaggi* Indirizzo della testa della lista
+    @param int ID del viaggio da cercare
+
+    @return Indirizzo del viaggio se presente, NULL se assente
+*/
 ListaViaggi* isThere(ListaViaggi* list, int idToSearch){
     if(list != NULL){
         if(list->id == idToSearch)
@@ -27,6 +36,13 @@ ListaViaggi* isThere(ListaViaggi* list, int idToSearch){
     return NULL;
 }
 
+/*
+    Funzione che comunica se, tra tutti i viaggi nella lista, almeno uno ha almeno un posto disponibile.
+
+    @param ListaViaggi* Indirizzo della testa della lista
+
+    @return 0 se non presenti posti, 1 se presenti
+*/
 int presentiPostiDisp(ListaViaggi* list){
     if(list != NULL){
         if(list->viaggio.postiDisp != 0)
@@ -36,12 +52,24 @@ int presentiPostiDisp(ListaViaggi* list){
     return 0;
 }
 
+/*
+    Funzione che comunica se ci sono oppure no viaggi.
+
+    @param ListaViaggi* Indirizzo della testa della lista
+
+    @return 0 se non ci sono viaggi, 1 se ci sono
+*/
 int presentiViaggi(ListaViaggi* lista){
     if(lista == NULL)
         return 0;
     return 1;
 }
 
+/*
+    Funzione che visualizza tutti i viaggi presenti nella lista.
+
+    @param ListaViaggi* Indirizzo della testa della lista
+*/
 void visualizzaViaggi(ListaViaggi* list){
     if(list != NULL){
         printf("%d\t%s\t\t\t%s\t\t\t%d/%d/%d\t\t%d:%d\t\t%.2f\t\t\t%d\n", list->id, list->viaggio.destinazione, list->viaggio.partenza, list->viaggio.data.day, list->viaggio.data.month, list->viaggio.data.year, list->viaggio.data.hour, list->viaggio.data.minute, list->viaggio.costoBiglietto, list->viaggio.postiDisp);
@@ -49,7 +77,11 @@ void visualizzaViaggi(ListaViaggi* list){
     }
 }
 
-// non visualizza i voli senza posti dsponibili
+/*
+    Funzione che visualizza tutti i viaggi presenti nella lista con almeno 1 posto disponibile.
+
+    @param ListaViaggi* Indirizzo della testa della lista
+*/
 void visualizzaViaggiAcquisto(ListaViaggi* list){
     if(list != NULL){
         if(list->viaggio.postiDisp > 0)
@@ -63,6 +95,14 @@ void visualizzaViaggiAcquisto(ListaViaggi* list){
     INSERIMENTI e IMPOSTAZIONE DATI
 
 */
+
+/*
+    Funzione che calcola l'ID massimo presente in una lista.
+
+    @param ListaViaggi* Indirizzo della testa della lista
+
+    @return int ID massimo presente nella lista
+*/
 int maxId(ListaViaggi* list){
     int tempMax = 0;
     while(list != NULL){
@@ -73,6 +113,12 @@ int maxId(ListaViaggi* list){
     return tempMax;
 }
 
+/*
+    Funzione che imposta i dati del viaggio.
+
+    @param ListaViaggi* Indirizzo del nodo di cui impostare i dati
+    @param Viaggio Struttura che contiene i dati da impostare nel nuovo nodo
+*/
 void setDatiViaggio(ListaViaggi* new, Viaggio temp){
 
     strcpy(new->viaggio.partenza, temp.partenza);
@@ -88,6 +134,15 @@ void setDatiViaggio(ListaViaggi* new, Viaggio temp){
     new->viaggio.costoBiglietto = temp.costoBiglietto;
 }
 
+
+/*
+    Funzione che alloca il nodo e chiama la funzione che ne imposta i dati.
+
+    @param Viaggio Struttura che contiene i dati da impostare nel nuovo nodo
+    @param int ID da associare al viaggio
+
+    @return ListaViaggi* Indirizzo del nuovo nodo
+*/
 ListaViaggi* newViaggio(Viaggio temp, int id){
     ListaViaggi* new = (ListaViaggi*)malloc(sizeof(ListaViaggi));
     setDatiViaggio(new, temp);
@@ -95,9 +150,16 @@ ListaViaggi* newViaggio(Viaggio temp, int id){
     return new;
 }
 
+/*
+    Funzione che aggiunge il viaggio alla lista, in ordine di partenza crescente (il più recente all'inizio).
+
+    @param ListaViaggi** Doppio puntatore alla testa della lista dei viaggi
+    @param Viaggio Struttura che contiene i dati del viaggio da inserire alla lista
+*/
 void pushViaggio(ListaViaggi** lista, Viaggio temp){
     if(*lista != NULL){
         ListaViaggi *temporaneo;
+        // se la data del viaggio da inserire è minore di quella del primo viaggio
         if(datecmp((*lista)->viaggio.data, temp.data) > 0){
             temporaneo = newViaggio(temp, maxId(*lista) + 1);
             temporaneo->next = *lista;
@@ -105,7 +167,9 @@ void pushViaggio(ListaViaggi** lista, Viaggio temp){
         }
         else{
             temporaneo = *lista;
+            //scorre la lista finchè il viaggio da inserire ha data maggiore di quella del nodo corrente
             while(datecmp(temporaneo->viaggio.data, temp.data) < 0){
+                // qui è arrivata alla fine
                 if(temporaneo->next == NULL){
                     temporaneo->next = newViaggio(temp, maxId(*lista) + 1);
                     temporaneo->next->next = NULL;
@@ -130,6 +194,11 @@ void pushViaggio(ListaViaggi** lista, Viaggio temp){
     }
 }
 
+/*
+    Funzione che richide tutti i dati del viaggio (con relativi controlli) e chiama la funzione che lo aggiunge alla lista.
+
+    @param ListaViaggi** Doppio puntatore alla testa della lista dei viaggi
+*/
 void inserisciViaggio(ListaViaggi** viaggi){
     Viaggio temp;
 
@@ -215,30 +284,41 @@ void inserisciViaggio(ListaViaggi** viaggi){
 }
 
 /*
+    Funzione che rimuove un viaggio dalla lista.
 
-    RIMOZIONI
-
+    @param ListaViaggi** Doppio puntatore alla testa della lista dei viaggi
+    @param ListaViaggi* Indirizzo del viaggio da rimuovere
 */
-//rimuovere (quando acquisti o quando si vuole)
 void popInOgniPosizione(ListaViaggi** list, ListaViaggi* temp){
+    // fa questo se il viaggio da togliere è in testa
     if(*list == temp){
         *list = (*list)->next;
         free(temp);
     }
-    else if((*list)->next == NULL){
-        (*list)->next = NULL;
-        free(temp);
-    }
+    // fa questo se in centro o alla fine
     else{
         ListaViaggi *tempToMove = *list;
+        // tempToMove alla fine si posiziona sul nodo prima di quello da eliminare
         while(tempToMove->next != temp){
             tempToMove = tempToMove->next;
         }
-        tempToMove->next = tempToMove->next->next;
+
+        // collego precedente e successivo (oppure NULL se alla fine) del nodo da eliminare: per ricomporre la lista
+        if(temp->next == NULL)          // se quello da eliminare è alla fine
+            tempToMove->next = NULL;
+        else                            // se quello da eliminare è in centro
+            tempToMove->next = tempToMove->next->next;
+
         free(temp);
     }
 }
 
+/*
+    Funzione che ricerca un viaggio dalla lista in base all'ID a lui associato e lo rimuove.
+
+    @param ListaViaggi** Doppio puntatore alla testa della lista dei viaggi
+    @param int ID del viaggio da rimuovere
+*/
 void rimuoviViaggio(ListaViaggi** list, int idToRemove){
     ListaViaggi *temp = *list;
     while (temp != NULL)
@@ -251,9 +331,16 @@ void rimuoviViaggio(ListaViaggi** list, int idToRemove){
     }
 }
 
+/*
+    Funzione svuota completamente la lista dei viaggi.
+
+    @param ListaViaggi** Doppio puntatore alla testa della lista dei viaggi
+*/
 void svuotaLista(ListaViaggi** list){
-    ListaViaggi *temp = *list;
-    ListaViaggi* toDelete;
+    ListaViaggi *temp = *list;  // salvo il puntatore alla testa in una variabile temporanea: per avanzare nella lista senza modificare il puntatore originale
+    ListaViaggi* toDelete;      // conterrà l'indirizzo del nodo su cui fare la free
+
+    // scorro la lista, salvo temporaneamente l'indirizzo del nodo da eliminare, avanzo al successivo, libero il nodo salvato nel temporaneo
     while (temp != NULL){
         toDelete = temp;
         temp = temp->next;
@@ -263,11 +350,10 @@ void svuotaLista(ListaViaggi** list){
 }
 
 /*
+    Funzione che fa "partire" gli aerei: quando la sua data diventa precedente a quella attuale, dovrebbe essere rimosso rimosso dalla lista.
 
-    FA "PARTIRE GLI AEREI"
-
+    @param ListaViaggi* Doppio puntatore alla testa della lista dei viaggi
 */
-
 // non cempletata in tempo
 // void takeOff(ListaViaggi** list){
 //     ListaViaggi *temp = *list;
@@ -283,22 +369,33 @@ void svuotaLista(ListaViaggi** list){
 // }
 
 /*
+    Funzione che legge tutti i viaggi presenti sul file e li inserisce in una lista.
 
-    GESTIONE FILE
-
+    @param ListaViaggi** Doppio puntatore alla testa della lista dei viaggi
+    @param char* Nome del file da cui leggere
 */
 void downloadViaggi(ListaViaggi** lista, char* fileName){
     FILE *fpin = fopen(fileName, "rb");
     Viaggio temp;
+
+    // legge un viaggio dal file, lo mette nella variabile "temp" e poi lo aggiunge alla lista
     while(fread(&temp, sizeof(Viaggio), 1, fpin)){
         pushViaggio(lista, temp);
-        //printf("nome: %s conome: %s anni:%d\n", temp.name, temp.surname, temp.year);
     }
     fclose(fpin);
 }
 
+
+/*
+    Funzione che scrive sul file tutti i viaggi.
+
+    @param ListaViaggi* Puntatore alla testa della lista dei viaggi
+    @param char* Nome del file su cui scrivere
+*/
 void uploadViaggi(ListaViaggi* lista, char* fileName){
     FILE *fpout = fopen(fileName, "wb");
+
+    // scorre tutta la lista e mano mano scrive sul file i viaggi
     while(lista != NULL){
         ListaViaggi *temp2 = lista;
         fwrite(&lista->viaggio, sizeof(Viaggio), 1, fpout);
