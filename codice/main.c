@@ -8,6 +8,12 @@
 #include "viaggi.c"
 #include "finanza.c"
 
+
+/*
+    Funzione che crea il file indicato se non presente.
+
+    @param char* Nome del file da configurare
+*/
 void configureAndTestFile(char* fileName){
     FILE *fpin;
     fpin = fopen(fileName, "rb");
@@ -53,10 +59,10 @@ int main(){
                     }while (sceltaCase1 > 4 || sceltaCase1 < 0);
                     system("CLS");
 
-                    if(sceltaCase1 == 1){
+                    if(sceltaCase1 == 1){           // inserimento nuovo viaggio
                         inserisciViaggio(&viaggi);
                     }
-                    else if(sceltaCase1 == 2){
+                    else if(sceltaCase1 == 2){      // viasualizzazione lista
                         if(presentiViaggi(viaggi)){
                             system("CLS");
                             printf("LISTA COMPLETA VIAGGI\nID\tPARTENZA\t\tDESTINAZIONE\t\tDATA\t\t\tORA\t\tCOSTO BIGLIETTO\t\tBIGLIETTI DISPONIBILI\n");
@@ -71,7 +77,7 @@ int main(){
                             getch();
                         }
                     }
-                    else if(sceltaCase1 == 3){
+                    else if(sceltaCase1 == 3){      // eliminazione viaggio
                         if(presentiViaggi(viaggi)){    
                             int toDelete;
 
@@ -91,7 +97,7 @@ int main(){
                             getch();
                         }
                     }
-                    else if(sceltaCase1 == 4){
+                    else if(sceltaCase1 == 4){      // cancellazione di tutti i viaggi
                         if(presentiViaggi(viaggi)){    
                             svuotaLista(&viaggi);
                             printf("tutti i viaggi sono stati cancellati!\n");
@@ -111,8 +117,6 @@ int main(){
 
             case 2 : {
                 int sceltaCase2;
-                //printf("Saldo attuale: %d\n", saldo);
-                // printf("1. VISUALIZZA ENTRATE       2. VISUALIZZA USCITE        0. USCITA\n");
                 printf("1. VISUALIZZA ENTRATE       0. USCITA\n");
                 scanf("%d", &sceltaCase2);
                 system("CLS");
@@ -121,17 +125,12 @@ int main(){
                     printf("LISTA TRANSAZIONI IN ENTRATA\nTIPOLOGIA\t\tIMPORTO\t\tDATA\t\tORA\n");
                     visualizzaTransazioni(entrateFileName);
                 }
-                // else if(sceltaCase2 == 2){
-                //     printf("LISTA TRANSAZIONI IN ENTRATA\nTIPOLOGIA\t\tIMPORTO\t\tDATA\t\tORA\n");
-                //     visualizzaTransazioni(usciteFileName);
-                // }
                 getch();
                 break;
             }
 
             // acquisto biglietti
             case 3 : {
-                //printf("%d", presentiPostiDisp);
                 if(presentiPostiDisp(viaggi) != 0){    
                     int idToBuy;
                     int sceltaCase3;

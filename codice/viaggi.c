@@ -53,7 +53,7 @@ int presentiPostiDisp(ListaViaggi* list){
 }
 
 /*
-    Funzione che comunica se ci sono oppure no viaggi.
+    Funzione che comunica se ci sono oppure no viaggi nella lista.
 
     @param ListaViaggi* Indirizzo della testa della lista
 
@@ -78,7 +78,7 @@ void visualizzaViaggi(ListaViaggi* list){
 }
 
 /*
-    Funzione che visualizza tutti i viaggi presenti nella lista con almeno 1 posto disponibile.
+    Funzione ricorsiva che visualizza tutti i viaggi presenti nella lista con almeno 1 posto disponibile.
 
     @param ListaViaggi* Indirizzo della testa della lista
 */
@@ -166,16 +166,16 @@ void pushViaggio(ListaViaggi** lista, Viaggio temp){
             *lista = temporaneo;
         }
         else{
-            temporaneo = *lista;
+            temporaneo = *lista;    // copio l'indirizzo della testa per non modificare quello originale
             //scorre la lista finchè il viaggio da inserire ha data maggiore di quella del nodo corrente
             while(datecmp(temporaneo->viaggio.data, temp.data) < 0){
-                // qui è arrivata alla fine
-                if(temporaneo->next == NULL){
+                
+                if(temporaneo->next == NULL){           // qui è arrivata alla fine
                     temporaneo->next = newViaggio(temp, maxId(*lista) + 1);
                     temporaneo->next->next = NULL;
                     break;
                 }
-                else if(datecmp(temporaneo->next->viaggio.data, temp.data) >= 0){
+                else if(datecmp(temporaneo->next->viaggio.data, temp.data) >= 0){   // qui il viaggio è nella posizione corretta dove deve essere inserito
                     ListaViaggi *succ = temporaneo->next;
                     temporaneo->next = newViaggio(temp, maxId(*lista) + 1);
                     temporaneo->next->next = succ;
@@ -183,12 +183,12 @@ void pushViaggio(ListaViaggi** lista, Viaggio temp){
                     break;
                 }
                 else
-                    temporaneo = temporaneo->next;
+                    temporaneo = temporaneo->next;  // se nessuna delle precedenti è confermata va a quello dopo
             }
             
         }    
     }
-    else{
+    else{   // qui se la lista è vuota
         *lista = newViaggio(temp, 0);
         (*lista)->next = NULL;
     }
